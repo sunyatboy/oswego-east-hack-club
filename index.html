@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Oswego East Hack Club</title>
+  <script src="https://unpkg.com/react@17/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script>
+    tailwind.config = {
+      theme: { extend: { fontFamily: { grotesk: ['"Space Grotesk"', 'ui-sans-serif', 'system-ui', 'sans-serif'] } } }
+    };
+  </script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div id="root"></div>
+  <script type="text/babel">
+const CONFIG = {
+  clubName: "Oswego East Hack Club",
+  school: "Oswego East High School",
+  mascot: "Wolves",
+  meetingDay: "[DAY]",
+  meetingTime: "[TIME]",
+  room: "[ROOM #]",
+  advisor: "[ADVISOR NAME]",
+  email: "hackclub@example.com",
+  instagram: "#",
+  discord: "#",
+};
+
+const NAV = [
+  ["About", "#about"],
+  ["What we do", "#do"],
+  ["Meetings", "#meetings"],
+  ["Team", "#team"],
+  ["FAQ", "#faq"],
+  ["Join", "#join"],
+];
+
+const DO = [
+  ["Build projects", "Websites, games, bots, and hardware. You pick the idea, we help you ship it."],
+  ["Hack together", "Hands-on build nights where you code alongside other students and get unstuck fast."],
+  ["Learn from each other", "Short student-led workshops: Git, HTML/CSS, Python, and more."],
+  ["Show it off", "Demo time every few weeks. Everything built gets a public page."],
+];
+
+const MEETINGS = [
+  ["Kickoff", "Date TBD", "Meet the club, pick a first project, set up your tools."],
+  ["Workshop: Your first website", "Date TBD", "Build and publish a personal page in one session."],
+  ["Build night", "Date TBD", "Open work time. Bring a project or start one."],
+  ["Demo day", "Date TBD", "Show what you built to the club."],
+];
+
+const TEAM = [
+  ["[Founder name]", "Founder / President"],
+  ["[Name]", "Vice President"],
+  ["[Name]", "Events Lead"],
+  [CONFIG.advisor, "Faculty Advisor"],
+];
+
+const FAQ = [
+  ["Do I need to know how to code?", "No. Beginners are the point. If you can type, you can start."],
+  ["Does it cost anything?", "No. Free to join."],
+  ["What do I need to bring?", "A laptop or a school Chromebook if you have one. We will help with the rest."],
+  ["Which grades can join?", "All of them. Freshmen through seniors."],
+];
+
+const RED = "bg-red-600";
+
+function Terminal() {
+  const lines = [
+    ["$", "git clone oswego-east-hack-club"],
+    ["$", "cd ideas && ls"],
+    ["", "website  game  discord-bot  robot  app"],
+    ["$", "make something"],
+    ["", "Building... done. Shipped."],
+  ];
+  return (
+    <div className="border border-zinc-700 bg-zinc-950 rounded-lg overflow-hidden font-mono text-sm">
+      <div className="flex items-center gap-2 px-4 py-3 border-b border-zinc-800 bg-zinc-900">
+        <span className="w-3 h-3 rounded-full bg-red-600"></span>
+        <span className="w-3 h-3 rounded-full bg-zinc-600"></span>
+        <span className="w-3 h-3 rounded-full bg-zinc-600"></span>
+        <span className="ml-3 text-xs text-zinc-300">hackclub.sh</span>
+      </div>
+      <div className="p-5 space-y-2 text-zinc-100">
+        {lines.map((l, i) => (
+          <div key={i} className="flex gap-3">
+            <span className="text-red-300 w-3">{l[0]}</span>
+            <span className={l[0] ? "text-zinc-50" : "text-zinc-300"}>{l[1]}</span>
+          </div>
+        ))}
+        <div className="flex gap-3"><span className="text-red-300 w-3">$</span><span className="inline-block w-2 h-4 bg-zinc-100 animate-pulse mt-0.5"></span></div>
+      </div>
+    </div>
+  );
+}
+
+function App() {
+  const [open, setOpen] = React.useState(0);
+  const [menu, setMenu] = React.useState(false);
+  const [form, setForm] = React.useState({ name: "", grade: "9", email: "", interest: "Web" });
+  const [sent, setSent] = React.useState(false);
+
+  const submit = (e) => {
+    e.preventDefault();
+    const subject = encodeURIComponent("Join request: " + form.name);
+    const body = encodeURIComponent(
+      "Name: " + form.name + "\nGrade: " + form.grade + "\nEmail: " + form.email + "\nInterested in: " + form.interest
+    );
+    setSent(true);
+    window.location.href = "mailto:" + CONFIG.email + "?subject=" + subject + "&body=" + body;
+  };
+
+  const input = "w-full bg-zinc-900 border border-zinc-600 rounded-lg px-4 py-3 text-zinc-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-red-500";
+  const label = "block text-xs uppercase tracking-widest text-zinc-300 mb-2";
+
+  return (
+    <div className="min-h-screen bg-zinc-900 text-zinc-50 font-grotesk scroll-smooth">
+      <style>{"html{scroll-behavior:smooth}@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.animate-pulse{animation:none}}a:focus-visible,button:focus-visible{outline:2px solid #f87171;outline-offset:2px}"}</style>
+
+      <header className="sticky top-0 z-20 bg-zinc-900 border-b border-zinc-800">
+        <div className="max-w-6xl mx-auto px-5 h-16 flex items-center justify-between">
+          <a href="#top" className="flex items-center gap-3 font-bold">
+            <span className={RED + " text-white w-9 h-9 rounded-lg flex items-center justify-center font-mono text-sm"}>{"</>"}</span>
+            <span className="hidden sm:inline">{CONFIG.clubName}</span>
+            <span className="sm:hidden">OE Hack Club</span>
+          </a>
+          <nav className="hidden md:flex items-center gap-7 text-sm text-zinc-200">
+            {NAV.slice(0, 5).map((n) => (
+              <a key={n[0]} href={n[1]} className="hover:text-white">{n[0]}</a>
+            ))}
+            <a href="#join" className={RED + " text-white px-4 py-2 rounded-lg font-semibold hover:bg-red-700"}>Join</a>
+          </nav>
+          <button className="md:hidden border border-zinc-600 rounded-lg px-3 py-2 text-sm" onClick={() => setMenu(!menu)} aria-label="Menu">
+            <i className={menu ? "fa-solid fa-xmark" : "fa-solid fa-bars"}></i>
+          </button>
+        </div>
+        {menu && (
+          <div className="md:hidden border-t border-zinc-800 px-5 py-3 flex flex-col">
+            {NAV.map((n) => (
+              <a key={n[0]} href={n[1]} onClick={() => setMenu(false)} className="py-3 border-b border-zinc-800 text-zinc-100">{n[0]}</a>
+            ))}
+          </div>
+        )}
+      </header>
+
+      <section id="top" className="max-w-6xl mx-auto px-5 py-16 md:py-24 grid md:grid-cols-2 gap-12 items-center">
+        <div>
+          <p className="text-xs uppercase tracking-widest text-zinc-300 mb-5">{CONFIG.school} / Oswego, IL</p>
+          <h1 className="text-5xl md:text-6xl font-bold tracking-tight text-balance leading-tight">
+            Code something real. Right here at Oswego East.
+          </h1>
+          <p className="mt-6 text-lg text-zinc-200 max-w-prose text-pretty">
+            {CONFIG.clubName} is a student-run club where {CONFIG.mascot} build websites, games, and apps together. No experience needed, no cost, just show up with an idea.
+          </p>
+          <div className="mt-8 flex flex-wrap gap-3">
+            <a href="#join" className={RED + " text-white px-6 py-3 rounded-lg font-semibold hover:bg-red-700"}>Join the club</a>
+            <a href="#meetings" className="border border-zinc-500 px-6 py-3 rounded-lg font-semibold hover:bg-zinc-800">See meetings</a>
+          </div>
+        </div>
+        <Terminal />
+      </section>
+
+      <section className="bg-zinc-950 border-y border-zinc-800">
+        <div className="max-w-6xl mx-auto px-5 grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-zinc-800">
+          {[["Meets", CONFIG.meetingDay], ["Time", CONFIG.meetingTime], ["Room", CONFIG.room]].map((s) => (
+            <div key={s[0]} className="py-6 sm:px-6 first:sm:pl-0">
+              <div className="text-xs uppercase tracking-widest text-zinc-300">{s[0]}</div>
+              <div className="text-2xl font-bold mt-1 tabular-nums">{s[1]}</div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section id="about" className="max-w-6xl mx-auto px-5 py-20 grid md:grid-cols-3 gap-10">
+        <div>
+          <p className="text-xs uppercase tracking-widest text-zinc-300 mb-3">About</p>
+          <h2 className="text-3xl font-bold tracking-tight text-balance">A club for people who make things.</h2>
+        </div>
+        <div className="md:col-span-2 space-y-5 text-lg text-zinc-200 max-w-prose text-pretty">
+          <p>We are a chapter of the global Hack Club network of teen coders. At Oswego East, that means a room full of students building what they are curious about, from a first "Hello, world" to a full app.</p>
+          <p>Our advisor is {CONFIG.advisor}. Everything else is run by students, which means you get a say in what we build.</p>
+        </div>
+      </section>
+
+      <section id="do" className="bg-zinc-800">
+        <div className="max-w-6xl mx-auto px-5 py-20">
+          <p className="text-xs uppercase tracking-widest text-zinc-300 mb-3">What we do</p>
+          <h2 className="text-3xl font-bold tracking-tight mb-10">Four things, every semester.</h2>
+          <div className="divide-y divide-zinc-600 border-y border-zinc-600">
+            {DO.map((d, i) => (
+              <div key={d[0]} className="py-6 grid md:grid-cols-12 gap-3 md:gap-6 items-baseline">
+                <span className="md:col-span-1 font-mono text-red-300 tabular-nums">0{i + 1}</span>
+                <h3 className="md:col-span-4 text-xl font-bold">{d[0]}</h3>
+                <p className="md:col-span-7 text-zinc-100 max-w-prose">{d[1]}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section id="meetings" className="max-w-6xl mx-auto px-5 py-20">
+        <p className="text-xs uppercase tracking-widest text-zinc-300 mb-3">Meetings</p>
+        <h2 className="text-3xl font-bold tracking-tight mb-10">What is coming up.</h2>
+        <div className="grid md:grid-cols-2 gap-px bg-zinc-700 border border-zinc-700 rounded-lg overflow-hidden">
+          {MEETINGS.map((m) => (
+            <div key={m[0]} className="bg-zinc-900 p-6">
+              <div className="text-xs uppercase tracking-widest text-red-300 mb-2">{m[1]}</div>
+              <h3 className="text-xl font-bold mb-2">{m[0]}</h3>
+              <p className="text-zinc-200">{m[2]}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section id="team" className="bg-zinc-950 border-y border-zinc-800">
+        <div className="max-w-6xl mx-auto px-5 py-20 grid md:grid-cols-3 gap-10">
+          <div>
+            <p className="text-xs uppercase tracking-widest text-zinc-300 mb-3">Team</p>
+            <h2 className="text-3xl font-bold tracking-tight text-balance">Students running it.</h2>
+          </div>
+          <div className="md:col-span-2 divide-y divide-zinc-700 border-y border-zinc-700">
+            {TEAM.map((t) => (
+              <div key={t[1]} className="py-4 flex justify-between gap-4">
+                <span className="font-semibold">{t[0]}</span>
+                <span className="text-zinc-300">{t[1]}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section id="faq" className="max-w-3xl mx-auto px-5 py-20">
+        <p className="text-xs uppercase tracking-widest text-zinc-300 mb-3">FAQ</p>
+        <h2 className="text-3xl font-bold tracking-tight mb-8">Quick answers.</h2>
+        <div className="divide-y divide-zinc-700 border-y border-zinc-700">
+          {FAQ.map((f, i) => (
+            <div key={f[0]}>
+              <button className="w-full text-left py-5 flex justify-between items-center gap-4 font-semibold" onClick={() => setOpen(open === i ? -1 : i)} aria-expanded={open === i}>
+                {f[0]}
+                <i className={open === i ? "fa-solid fa-minus" : "fa-solid fa-plus"}></i>
+              </button>
+              {open === i && <p className="pb-5 text-zinc-200 max-w-prose">{f[1]}</p>}
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section id="join" className={RED}>
+        <div className="max-w-6xl mx-auto px-5 py-20 grid md:grid-cols-2 gap-12">
+          <div>
+            <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-balance text-white">Come to the next meeting.</h2>
+            <p className="mt-5 text-red-50 text-lg max-w-prose">Fill this out and we will email you the details. Or just walk into {CONFIG.room} on {CONFIG.meetingDay}.</p>
+          </div>
+          <div className="bg-zinc-900 rounded-lg p-6 md:p-8">
+            {sent ? (
+              <div>
+                <h3 className="text-2xl font-bold mb-2">Your email app should be opening.</h3>
+                <p className="text-zinc-200 mb-4">Send the message to finish signing up.</p>
+                <button className="border border-zinc-500 px-4 py-2 rounded-lg" onClick={() => setSent(false)}>Back to form</button>
+              </div>
+            ) : (
+              <form onSubmit={submit} className="space-y-5">
+                <div>
+                  <label className={label} htmlFor="n">Name</label>
+                  <input id="n" required className={input} value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className={label} htmlFor="g">Grade</label>
+                    <select id="g" className={input} value={form.grade} onChange={(e) => setForm({ ...form, grade: e.target.value })}>
+                      {["9", "10", "11", "12"].map((g) => <option key={g}>{g}</option>)}
+                    </select>
+                  </div>
+                  <div>
+                    <label className={label} htmlFor="i">Interested in</label>
+                    <select id="i" className={input} value={form.interest} onChange={(e) => setForm({ ...form, interest: e.target.value })}>
+                      {["Web", "Games", "Apps", "Hardware", "Not sure yet"].map((g) => <option key={g}>{g}</option>)}
+                    </select>
+                  </div>
+                </div>
+                <div>
+                  <label className={label} htmlFor="e">Email</label>
+                  <input id="e" type="email" required className={input} value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
+                </div>
+                <button className={RED + " w-full text-white font-semibold py-3 rounded-lg hover:bg-red-700"}>Sign up</button>
+              </form>
+            )}
+          </div>
+        </div>
+      </section>
+
+      <footer className="bg-zinc-950">
+        <div className="max-w-6xl mx-auto px-5 py-10 flex flex-col md:flex-row justify-between gap-6 text-sm text-zinc-300">
+          <div>
+            <div className="font-bold text-zinc-50">{CONFIG.clubName}</div>
+            <div>{CONFIG.school}, Oswego, IL. A student-run club.</div>
+          </div>
+          <div className="flex gap-6">
+            <a href={CONFIG.instagram} className="hover:text-white">Instagram</a>
+            <a href={CONFIG.discord} className="hover:text-white">Discord</a>
+            <a href="https://hackclub.com" className="hover:text-white">hackclub.com</a>
+          </div>
+        </div>
+      </footer>
+    </div>
+  );
+}
+
+    ReactDOM.render(<App />, document.getElementById('root'));
+  </script>
+</body>
+</html>
